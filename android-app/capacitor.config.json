@@ -1,0 +1,7 @@
+{
+  "appId": "com.nour.mrpkhamat",
+  "appName": "الخامات MRP",
+  "webDir": "www",
+  "android": { "allowMixedContent": false },
+  "server": { "androidScheme": "https" }
+}

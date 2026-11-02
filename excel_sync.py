@@ -21,7 +21,7 @@ DEFAULT_CONFIG = {
     "port": 5173,
     "_help_online": "عشان يتفتح من أي مكان: app_code = كود الدخول للتطبيق، و github = الريبو والتوكن",
     "app_code": "",
-    "github": {"repo": "", "token": "", "branch": "main"},
+    "github": {"repo": "nourenvo-png/MRP", "token": "", "branch": "main"},
 }
 
 # ---------- helpers ----------

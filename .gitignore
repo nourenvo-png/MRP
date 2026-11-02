@@ -5,3 +5,6 @@ data/sync.json
 data/net.json
 __pycache__/
 node_modules/
+android-app/www/
+android-app/android/
+android-app/node_modules/

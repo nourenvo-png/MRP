@@ -56,7 +56,7 @@
     <script type="module" src="./src/app.js"></script>
     <script>
       // التطبيق على الموبايل: الكاش بيشتغل بس على localhost أو https
-      if ("serviceWorker" in navigator && window.isSecureContext) navigator.serviceWorker.register("./sw.js").catch(() => {});
+      if ("serviceWorker" in navigator && window.isSecureContext && !window.Capacitor) navigator.serviceWorker.register("./sw.js").catch(() => {});
     </script>
   </body>
 </html>

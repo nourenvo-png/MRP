@@ -1,0 +1,73 @@
+name: Build Android APK
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - "data/**"        # تحديثات بيانات المخزن (كل 10 دقايق) مش محتاجة APK جديد
+      - "**.md"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: android-app
+    steps:
+      - uses: actions/checkout@v4
+      - name: Copy the web app into www
+        run: |
+          mkdir -p www
+          cp -r ../index.html ../manifest.webmanifest ../src ../icons www/
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - run: npm install --no-audit --no-fund
+      - run: npx cap add android
+      - name: Icon & splash
+        continue-on-error: true
+        run: npx @capacitor/assets generate --android --iconBackgroundColor '#0b2a5b' --splashBackgroundColor '#0b2a5b' --splashBackgroundColorDark '#0b2a5b'
+      - run: npx cap sync android
+      - name: Fixed signing key (so updates install over the old app)
+        run: |
+          cp signing/debug.keystore android/app/fixed-debug.keystore
+          cat >> android/app/build.gradle <<'GRADLE'
+
+          // مفتاح توقيع ثابت لكل النسخ، عشان كل تحديث يتثبّت فوق القديم
+          android {
+              signingConfigs {
+                  debug {
+                      storeFile file('fixed-debug.keystore')
+                      storePassword 'android'
+                      keyAlias 'androiddebugkey'
+                      keyPassword 'android'
+                  }
+              }
+              buildTypes { debug { signingConfig signingConfigs.debug } }
+          }
+          GRADLE
+      - name: Build APK
+        working-directory: android-app/android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+      - run: cp android/app/build/outputs/apk/debug/app-debug.apk ../MRP-Khamat.apk
+      - name: Verify signing key
+        working-directory: .
+        run: keytool -printcert -jarfile MRP-Khamat.apk | grep -q "E3:7E:7D:07:F9:EB:10:39:1D:1D:BA:40:3E:3D:B5:09:75:47:89:44:3C:2A:00:82:29:CC:01:9D:14:B8:76:88"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MRP-Khamat-apk
+          path: MRP-Khamat.apk
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk-latest
+          name: الخامات MRP — آخر APK
+          body: "نزّل MRP-Khamat.apk وثبّته على الموبايل. كل نسخة جديدة بتتثبت فوق القديمة."
+          files: MRP-Khamat.apk
+          make_latest: true

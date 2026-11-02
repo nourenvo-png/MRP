@@ -2,8 +2,12 @@
 // سكريبت excel_sync.py بيكتب data/sync.json، والصفحة دي بتبص عليه كل دقيقة وتسحب الجديد.
 import { store } from "./store.js";
 
-const DATA = "./data/sync.json";
-const STATUS = "./data/sync-status.json";
+// جوه تطبيق الأندرويد الملفات بتبقى على الموبايل، فالبيانات بتيجي من موقع GitHub Pages
+export const isNative = () => !!window.Capacitor?.isNativePlatform?.();
+const REMOTE = "https://nourenvo-png.github.io/MRP/";
+const BASE = isNative() ? REMOTE : "./";
+const DATA = BASE + "data/sync.json";
+const STATUS = BASE + "data/sync-status.json";
 const EVERY_MS = 60 * 1000;
 
 export const syncInfo = { status: null, lastCheck: null, checking: false, error: null, needCode: false, codeError: "" };
@@ -80,7 +84,7 @@ export async function checkSync({ force = false } = {}) {
       if (!code) { syncInfo.needCode = true; syncInfo.error = null; return; }
       if (force || remote !== have || syncInfo.needCode) {
         try {
-          const data = await decrypt(await getJSON("./data/" + (status.dataFile || "sync.enc.json")), code);
+          const data = await decrypt(await getJSON(BASE + "data/" + (status.dataFile || "sync.enc.json")), code);
           syncInfo.needCode = false; syncInfo.codeError = "";
           if (data?.format === "mrp-sync/1" && (force || data.syncedAt !== have)) applySync(data);
         } catch (e) {
@@ -96,7 +100,7 @@ export async function checkSync({ force = false } = {}) {
     }
     syncInfo.error = null;
   } catch (e) {
-    syncInfo.error = e.fatal ? e.message : location.protocol === "file:" ? "الموقع لازم يشتغل من start-windows.bat عشان المزامنة تشتغل" : "مش قادر يوصل لبيانات المزامنة: " + e.message;
+    syncInfo.error = e.fatal ? e.message : isNative() ? "مفيش نت، أو البيانات لسه ما اترفعتش. التطبيق شغال بآخر بيانات اتحملت." : location.protocol === "file:" ? "الموقع لازم يشتغل من start-windows.bat عشان المزامنة تشتغل" : "مش قادر يوصل لبيانات المزامنة: " + e.message;
   } finally {
     syncInfo.lastCheck = new Date();
     syncInfo.checking = false;

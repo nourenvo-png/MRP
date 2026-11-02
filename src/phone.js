@@ -22,6 +22,7 @@ function qrSvg(text) {
 }
 
 export function renderPhoneCard() {
+  if (window.Capacitor?.isNativePlatform?.()) return "";
   if (!isLocal()) {
     const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone;
     if (standalone) return "";
@@ -30,7 +31,7 @@ export function renderPhoneCard() {
       <h3>📱 ثبّت التطبيق على الموبايل</h3>
       <p>${ios ? "في Safari دوس زرار المشاركة <b>⬆︎</b> وبعدين <b>Add to Home Screen</b>." : "في Chrome دوس <b>⋮</b> فوق وبعدين <b>Add to Home screen</b> (إضافة إلى الشاشة الرئيسية)."}
       هتلاقي أيقونة <b>الخامات</b> على الشاشة تفتح التطبيق على طول.</p>
-      <p class="cap">لازم الموبايل يكون على واي فاي الشركة، والكمبيوتر اللي شغّال عليه التطبيق مفتوح.</p>
+      <p class="cap">أو نزّل تطبيق الأندرويد: <a href="https://github.com/nourenvo-png/MRP/releases/latest">MRP-Khamat.apk</a></p>
     </section>`;
   }
   const url = net?.urls?.[0];
