@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>لوحة الخامات MRP</title>
+    <meta name="theme-color" content="#0b2a5b" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" type="image/png" href="./icons/favicon-32.png" />
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="الخامات" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./src/styles.css" />
+    <!-- قراءة ملفات الإكسيل -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- تصدير تقارير إكسيل منسقة -->
+    <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js" defer></script>
+  </head>
+  <body>
+    <div class="app">
+      <aside class="side-nav">
+        <div class="brand"><span class="logo">MRP</span><div><b>لوحة الخامات</b><small>تخطيط الاحتياج</small></div></div>
+        <nav id="nav">
+          <a href="#/dashboard" data-r="dashboard" class="tab"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3zm0 8h8v-6H3zm10 0h8V11h-8zm0-18v6h8V3z"/></svg><span>لوحة التحكم</span><em>الرئيسية</em></a>
+          <a href="#/materials" data-r="materials" class="tab"><svg viewBox="0 0 24 24"><path d="M12 2 3 6.5v11L12 22l9-4.5v-11zm0 2.2 6.5 3.3L12 10.8 5.5 7.5zM5 9.1l6 3v7.7l-6-3zm8 10.7v-7.7l6-3v7.7z"/></svg><span>الخامات</span><em>الخامات</em></a>
+          <a href="#/forecast" data-r="forecast" class="more-item">الفوركاست</a>
+          <a href="#/orders" data-r="orders" class="tab"><svg viewBox="0 0 24 24"><path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4m10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4M5.2 4l.4 2H21l-2.6 8H8.1l.4 2H19v2H6.9L3.6 4H1V2h3.8z"/></svg><span>طلبات الشراء</span><em>الطلبات</em></a>
+          <a href="#/movements" data-r="movements" class="tab"><svg viewBox="0 0 24 24"><path d="M7 7h11l-3-3 1.4-1.4L21.8 8l-5.4 5.4L15 12l3-3H7zm10 10H6l3 3-1.4 1.4L2.2 16l5.4-5.4L9 12l-3 3h11z"/></svg><span>تسجيل الحركات</span><em>الحركات</em></a>
+          <a href="#/defects" data-r="defects" class="more-item">عيوب الخامات</a>
+          <a href="#/reports" data-r="reports" class="more-item">التقارير</a>
+          <a href="#/sheets" data-r="sheets" class="more-item">الشيتات والمزامنة</a>
+          <button type="button" id="nav-more" class="tab more-btn" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg><span>المزيد</span><em>المزيد</em></button>
+        </nav>
+        <div class="nav-foot" id="nav-foot"></div>
+      </aside>
+      <div class="main-col">
+        <header class="topbar" id="topbar"></header>
+        <main class="main" id="main"><p class="loading">بيحمّل...</p></main>
+      </div>
+    </div>
+    <div class="toast" id="toast" hidden></div>
+    <div class="lock" id="lock" hidden>
+      <form class="lock-box" id="lock-form">
+        <img src="./icons/icon-192.png" alt="" width="64" height="64" />
+        <h2>لوحة الخامات</h2>
+        <p>اكتب كود الدخول عشان تشوف بيانات المخزن.</p>
+        <input id="lock-code" type="password" inputmode="text" autocomplete="current-password" placeholder="كود الدخول" required />
+        <p class="err" id="lock-err" hidden></p>
+        <button class="btn primary" type="submit" id="lock-btn">ادخل</button>
+      </form>
+    </div>
+    <script type="module" src="./src/app.js"></script>
+    <script>
+      // التطبيق على الموبايل: الكاش بيشتغل بس على localhost أو https
+      if ("serviceWorker" in navigator && window.isSecureContext) navigator.serviceWorker.register("./sw.js").catch(() => {});
+    </script>
+  </body>
+</html>

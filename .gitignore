@@ -1,0 +1,7 @@
+# أسرار: الباسورد والتوكن
+sync-config.json
+# بيانات المخزن المكشوفة (المتشفرة sync.enc.json بس اللي بتترفع)
+data/sync.json
+data/net.json
+__pycache__/
+node_modules/
