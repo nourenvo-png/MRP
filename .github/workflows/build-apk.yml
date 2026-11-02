@@ -4,6 +4,7 @@ on:
     branches: [ main ]
     paths-ignore:
       - "data/**"        # تحديثات بيانات المخزن (كل 10 دقايق) مش محتاجة APK جديد
+      - "download/**"    # الـ APK نفسه اللي بيتحط هنا للتنزيل
       - "**.md"
   workflow_dispatch:
 permissions:
@@ -60,6 +61,16 @@ jobs:
       - name: Verify signing key
         working-directory: .
         run: keytool -printcert -jarfile MRP-Khamat.apk | grep -q "E3:7E:7D:07:F9:EB:10:39:1D:1D:BA:40:3E:3D:B5:09:75:47:89:44:3C:2A:00:82:29:CC:01:9D:14:B8:76:88"
+      - name: Put the APK on the site too (nourenvo-png.github.io/MRP/download/)
+        working-directory: .
+        run: |
+          mkdir -p download
+          cp MRP-Khamat.apk download/MRP-Khamat.apk
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add download/MRP-Khamat.apk
+          git commit -m "APK جديد [skip ci]" || exit 0
+          for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin HEAD:main && break; sleep 5; done
       - uses: actions/upload-artifact@v4
         with:
           name: MRP-Khamat-apk
